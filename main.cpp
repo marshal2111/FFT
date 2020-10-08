@@ -2,9 +2,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cmath>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include "Headers/Axis.h"
 #include <complex>
 
@@ -16,7 +13,6 @@ void display();
 template <typename T> int sgn(T val);
 template <typename T> int Heaviside(T x);
 template <typename T> double Rect(T x, double d, double l);
-double max(double x, double y);
 vector<complex<double>> dft(vector<double> x, int numX);
 vector<complex<double>> FFT(vector<double> X);
 vector<complex<double>> rfft(vector<double> X, vector<complex<double>> &W);
@@ -107,15 +103,6 @@ int toDegree (double N)
 	return x;
 }
 
-double max(double x, double y)
-{
-	double res;
-	if (x > y)
-		return x;
-	else 
-		return y;
-}
-
 vector<complex<double>> FFT(vector<double> X)
 {
 	int N = X.size();
@@ -202,9 +189,9 @@ void processInput(GLFWwindow* window)
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
-        func.setScaleX(max(0.00001, func.scaleX * 0.999));
-        freq.setScaleX(max(0.00001, freq.scaleX * 0.999));
-        magn.setScaleX(max(0.00001, magn.scaleX * 0.999));
+        func.setScaleX(func.scaleX * 0.999);
+        freq.setScaleX(freq.scaleX * 0.999);
+        magn.setScaleX(magn.scaleX * 0.999);
     }
 
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
@@ -216,9 +203,9 @@ void processInput(GLFWwindow* window)
 
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        func.setScaleY(max(0.00001, func.scaleY * 0.999));
-        freq.setScaleY(max(0.00001, freq.scaleY * 0.999));
-        magn.setScaleY(max(0.00001, magn.scaleY * 0.999));
+        func.setScaleY(func.scaleY * 0.999);
+        freq.setScaleY(freq.scaleY * 0.999);
+        magn.setScaleY(magn.scaleY * 0.999);
     }
 }
 
@@ -258,7 +245,7 @@ int init()
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
 
-	glOrtho(0,500,0,500,0.0,1.0); 
+	glOrtho(0, 500, 0, 500, 0.0, 1.0); 
 
     return 0;
 }
