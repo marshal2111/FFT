@@ -8,27 +8,29 @@
 
 using namespace std;
 
-class Axis
+class Signal
 {
+
 private:
 
 	int centerX, centerY;
 	int lengthX, lengthY;
 
-	struct point 
+	struct coord 
 	{
-   		double x;
-   		double y;
+		double x;
+		double y;
 	};
 
-	vector<point> points;
+	vector<coord> points;
 	int pSize;
 
 public:
+
 	double scaleX, scaleY;
 	double dX, dY;
 
-	Axis(int centerX, int centerY, int lengthX, int lengthY, double scaleX, double scaleY)
+	Signal(int centerX, int centerY, int lengthX, int lengthY, double scaleX, double scaleY)
 	{
 		this->centerX = centerX;
 		this->centerY = centerY;
@@ -59,10 +61,10 @@ public:
 
 	void setCoords(double x, double y)
 	{
-		point coord;
-		coord.x = x;
-		coord.y = y;
-		this->points.push_back(coord);
+		coord newPoint;
+		newPoint.x = x;
+		newPoint.y = y;
+		this->points.push_back(newPoint);
 	}
 
 	void draw()
@@ -108,11 +110,11 @@ public:
 		glBegin(GL_POINTS);
 		for (auto iter = points.begin(); iter != points.end(); iter++)
     	{
-        	point coord = *iter;
-        	if ((coord.x * this->scaleX < this->lengthX) & (coord.y * this->scaleY < this->lengthY) & 
-        		(coord.x * this->scaleX > -(this->lengthX)) & (coord.y * this->scaleY > -(this->lengthY)))
+        	coord c = *iter;
+        	if ((c.x * this->scaleX < this->lengthX) & (c.y * this->scaleY < this->lengthY) & 
+        		(c.x * this->scaleX > -(this->lengthX)) & (c.y * this->scaleY > -(this->lengthY)))
         		//(coord.x*this->scaleX > -lengthX)&(coord.y*this->scaleY > -lengthY))
-        		glVertex3f(coord.x * this->scaleX + this->centerX, coord.y * this->scaleY + this->centerY, 0.0);
+        		glVertex3f(c.x * this->scaleX + this->centerX, c.y * this->scaleY + this->centerY, 0.0);
     	}
 
 		glEnd();

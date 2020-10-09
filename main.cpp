@@ -2,7 +2,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cmath>
-#include "Headers/Axis.h"
+#include "Headers/Signal.h"
+#include "Headers/transforms.h"
 #include <complex>
 
 #include <iostream>
@@ -13,15 +14,12 @@ void display();
 template <typename T> int sgn(T val);
 template <typename T> int Heaviside(T x);
 template <typename T> double Rect(T x, double d, double l);
-vector<complex<double>> dft(vector<double> x, int numX);
-vector<complex<double>> FFT(vector<double> X);
-vector<complex<double>> rfft(vector<double> X, vector<complex<double>> &W);
 int toDegree (double N);
- 	
+
 GLFWwindow* window;
-Axis func(150, 380, 100, 100 , 20, 50);
-Axis freq(150, 150, 100, 100, 0.1, 10);
-Axis magn(380, 150, 100, 100, 1, 10);
+Signal func(150, 380, 100, 100 , 20, 50);
+Signal freq(150, 150, 100, 100, 0.1, 10);
+Signal magn(380, 150, 100, 100, 1, 10);
 
 int main()
 {
@@ -48,6 +46,7 @@ int main()
 	}
 
 	vector<double> values(N + nulls, 0);
+
 	for (int i = 0; i<N; i++)
 	{
 		values[i] = Rect(i*ts, 2, 1);
@@ -101,75 +100,6 @@ int toDegree (double N)
 		x = x*2;
 	}
 	return x;
-}
-
-vector<complex<double>> FFT(vector<double> X)
-{
-	int N = X.size();
-	vector<complex<double>> W(N);
-	for (int i = 0; i < N; i++)
-	{
-		W[i] = polar(1.0, -2*M_PI*i/N);
-	}
-	vector<complex<double>> res = rfft(X, W);
-	cout << res.capacity() << endl;
-	return res;
-}
-
-vector<complex<double>> rfft(vector<double> X, vector<complex<double>> &W)
-{
-	int N = X.size();	
-	if (N == 1)
-	{	
-		vector<complex<double>> cX(1);
-		cX[0] = complex<double> (X[0], 0);
-		return cX;
-	}
-	else 
-	{
-		int M = N/2;
-		vector<double> Xeven(M, 0);
-		vector<double> Xodd(M, 0);
-		for (int i = 0; i<M; i++)
-		{
-			Xeven[i] = X[2 * i];
-			Xodd[i] = X[2 * i + 1];
-		}
-
-		vector<complex<double>> Feven(M, 0);
-		Feven = rfft(Xeven, W);
-		vector<complex<double>> Fodd(M, 0);
-		Fodd = rfft(Xodd, W);
-
-		vector<complex<double>> fft(N, 0);
-
-		for (int i = 0; i<N/2; i++)
-		{
-			fft[i] = Feven[i] + Fodd[i] * W[i * W.size() / N];
-			fft[i + N/2] = Feven[i] - Fodd[i] * W[i * W.size() / N];
-		}
-
-		return fft;
-	}
-}
-
-vector<complex<double>> dft(vector<double> x, int numX)
-{
-	vector<complex<double>> dft(numX, (0,0));
-	complex<double> eiler;
-	double tmp = 0;
-	for (int i = 0; i<numX; i++)
-	{
-		for (int j = 0; j<numX; j++)
-		{
-			tmp = (-2*i*j*M_PI) / (double)numX;
-			eiler = complex<double> (cos(tmp), sin(tmp));
-			cout << x[j] * eiler << endl;
-			dft[i] += x[j] * eiler;
-		}
-	}
-
-	return dft;
 }
 
 void processInput(GLFWwindow* window)
